@@ -226,13 +226,13 @@ static VALUE activeSQL_connected(VALUE self) {
 }
 
 static VALUE activeSQL_disconnect(VALUE self) {
-  int f;
   mysObj.reconnect = 1;
   mysql_close(mysObj.conn);
   return Qtrue;
 }
 
 static VALUE activeSQL_reconnect(VALUE self) {
+  //TODO: disconect should happen once.
   rb_funcall(rb_cBase, rb_intern("disconnect!"), 0);
   return rb_funcall(rb_cBase, rb_intern("connect!"), 0);
 }
