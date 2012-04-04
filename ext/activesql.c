@@ -11,10 +11,6 @@ struct config {
   unsigned int pp, flg;
 };
 
-struct tmpCon {
-  VALUE host, user, passwd, db, port, sock, flag;
-};
-
 struct mysql {
   MYSQL *conn;
   unsigned int reconnect;
@@ -23,8 +19,6 @@ struct mysql {
 
 struct config myConfig;
 struct mysql mysObj;
-struct tmpCon tCon;
-
 
 static VALUE activeSQL;
 static VALUE rb_cBase;
@@ -226,13 +220,16 @@ static VALUE activeSQL_connected(VALUE self) {
 }
 
 static VALUE activeSQL_disconnect(VALUE self) {
-  mysObj.reconnect = 1;
-  mysql_close(mysObj.conn);
-  return Qtrue;
+  if (mysObj.reconnect == 0) {
+    mysObj.reconnect = 1;
+    mysql_close(mysObj.conn);
+    return Qtrue;
+  }
+  else
+    return Qfalse;
 }
 
 static VALUE activeSQL_reconnect(VALUE self) {
-  //TODO: disconect should happen once.
   rb_funcall(rb_cBase, rb_intern("disconnect!"), 0);
   return rb_funcall(rb_cBase, rb_intern("connect!"), 0);
 }
@@ -258,14 +255,15 @@ static VALUE activeSQL_version(VALUE self) {
 }
 
 static VALUE activeSQL_load_config(int argc, VALUE *argv, VALUE self) {
-  rb_scan_args(argc, argv, "07", &tCon.host, &tCon.user, &tCon.passwd, &tCon.db, &tCon.port, &tCon.sock, &tCon.flag);
-  myConfig.db = IfNILorSTRING(tCon.db);
-  myConfig.flg = IfNILorINT(tCon.flag);
-  myConfig.ser = IfNILorSTRING(tCon.host);
-  myConfig.user = IfNILorSTRING(tCon.user);
-  myConfig.pass = IfNILorSTRING(tCon.passwd);
-  myConfig.pp = IfNILorINT(tCon.port);
-  myConfig.sock = IfNILorSTRING(tCon.sock);
+  VALUE host, user, passwd, db, port, sock, flag;
+  rb_scan_args(argc, argv, "07", &host, &user, &passwd, &db, &port, &sock, &flag);
+  myConfig.db = IfNILorSTRING(db);
+  myConfig.flg = IfNILorINT(flag);
+  myConfig.ser = IfNILorSTRING(host);
+  myConfig.user = IfNILorSTRING(user);
+  myConfig.pass = IfNILorSTRING(passwd);
+  myConfig.pp = IfNILorINT(port);
+  myConfig.sock = IfNILorSTRING(sock);
   mysObj.reconnect = 1;
   return Qnil;
 }
@@ -308,7 +306,7 @@ static VALUE castFrFetch(unsigned int typ, VALUE row, unsigned int itr) {
       cst = rb_funcall2(row, rb_intern("to_f"), 0, NULL);
       break;
     case 3:
-      default:
+    default:
       return row;
   }
   return cst;
@@ -354,4 +352,3 @@ static void init_active_sqls() {
   // Append methods as getters.
   mysObj.adds = 0;
 }
-

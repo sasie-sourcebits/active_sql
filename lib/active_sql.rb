@@ -25,13 +25,13 @@ module ActiveSQL
                
        # Result set not returned for execute_sql
        def execute_sql(qry)
-         unless qry =~ my_select
+         unless qry =~ my_select?
            exec_sql(qry)
          else
            raise ActiveSQLError, "no return of result set"
          end     
        end 
-       alias :nsert_sql :execute_sql       
+       alias :insert_sql :execute_sql       
 
        def establish_connection(config) 
          host     = (config[:host] ||= 'localhost')
