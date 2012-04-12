@@ -251,7 +251,7 @@ static VALUE activeSQL_connect(VALUE self) {
 }
 
 static VALUE activeSQL_version(VALUE self) {
-  return rb_str_new("1.0.1", 5);
+  return rb_str_new("2.0.1", 5);
 }
 
 static VALUE activeSQL_load_config(int argc, VALUE *argv, VALUE self) {

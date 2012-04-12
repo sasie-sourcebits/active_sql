@@ -1,5 +1,55 @@
+  ActiveSQL
+  =========
+  
+  Get the super fast mysql query results from Ruby and Rails applications.
+  
+  Love to write queries. 
+  
+  Build queries on your own. 
+ 
+  Get super fast results. 
 
+  Keep everything in mysql.
 
+  
+  USAGE: 
+  ======
+   
+    require 'active_sql' 
+    
+    ActiveSQL::Base.establish_connection(:host=> 'localhost',  :username=>'root', :password=> 'peep',  :socket=> '') => true 
 
-      Welcome to Active SQL. 
-    ==========================
+    ActiveSQL::Base.connected? => true
+  
+    ActiveSQL::Base.insert_sql("insert into users values(1, user1@example.com, 12, 12.3)") => true
+
+    ActiveSQL::Base.execute_sql("delete from roles") => true 
+ 
+    ActiveSQL::Base.select_sql("select * from users") => [[1, 'user1@example.com', 12, 12.3]]
+
+    ActiveSQL::Base.select_sql("select * from users").columns => ["id@users", "email@users", "rate@users", "points@users"]
+   
+    user = ActiveSQL::Base.select_sql("select id, rate as rank from users limit 1").first
+       # Methods will be added by default.
+       # Disabling methods possible.  
+       user.id => 1
+       user.rank => 12
+  
+    ActiveSQL::Base.my_char_set => "latin1"
+   
+    ActiveSQL::Base.my_char_set("utf8") => "utf8"
+
+    ActiveSQL::Base.my_database("another_database") => true 
+  
+    # Append get methods to every row.
+    ActiveSQL::Base.add_methods(true) => true 
+     
+    # Do not append methods:
+    ActiveSQL::Base.add_methods(false) => true
+       
+    # Status of adding methods to the rows.
+    ActiveSQL::Base.add_methods? => true 
+    
+
+  Note: 
+    Tentative build compiled by ruby 1.8 - linux.
