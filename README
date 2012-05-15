@@ -21,7 +21,7 @@
 
     ActiveSQL::Base.connected? => true
   
-    ActiveSQL::Base.insert_sql("insert into users values(1, user1@example.com, 12, 12.3)") => true
+    ActiveSQL::Base.insert_sql("insert into users values(1, 'user1@example.com', 12, 12.3)") => true
 
     ActiveSQL::Base.execute_sql("delete from roles") => true 
  
